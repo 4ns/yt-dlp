@@ -1,6 +1,7 @@
 import os
 import random
 import time
+from datetime import datetime
 
 from .common import FileDownloader
 from ..networking import Request
@@ -15,6 +16,7 @@ from ..utils import (
     ThrottledDownload,
     XAttrMetadataError,
     XAttrUnavailableError,
+    DateRange,
     encodeFilename,
     int_or_none,
     parse_http_range,
@@ -200,6 +202,14 @@ class HttpFD(FileDownloader):
 
         def download():
             data_len = ctx.data.headers.get('Content-length')
+
+            last_mod = ctx.data.headers.get('last-modified', None)
+            if last_mod:
+                last_mod = datetime.strptime(last_mod, "%a, %d %b %Y %H:%M:%S %Z")
+                dateRange = self.params.get('daterange', DateRange())
+                if last_mod.strftime("%Y%m%d") not in dateRange:
+                    self.to_screen(f'\r[download] Upload date of fragment {last_mod.isoformat()} is not in range {dateRange}')
+                    return False
 
             if ctx.data.headers.get('Content-encoding'):
                 # Content-encoding is present, Content-length is not reliable anymore as we are
