@@ -1,11 +1,10 @@
-import datetime
+import datetime as dt
 import functools
 import itertools
 import json
 import re
 import time
-
-from urllib.parse import urlparse
+import urllib.parse
 
 from .common import InfoExtractor, SearchInfoExtractor
 from ..networking import Request
@@ -163,8 +162,6 @@ class NiconicoIE(InfoExtractor):
             'description': 'md5:15df8988e47a86f9e978af2064bf6d8e',
             'timestamp': 1341128008,
             'upload_date': '20120701',
-            'uploader': None,
-            'uploader_id': None,
             'thumbnail': r're:https?://.*',
             'duration': 5271,
             'view_count': int,
@@ -822,12 +819,12 @@ class NicovideoSearchDateIE(NicovideoSearchBaseIE, SearchInfoExtractor):
         'playlist_mincount': 1610,
     }]
 
-    _START_DATE = datetime.date(2007, 1, 1)
+    _START_DATE = dt.date(2007, 1, 1)
     _RESULTS_PER_PAGE = 32
     _MAX_PAGES = 50
 
     def _entries(self, url, item_id, start_date=None, end_date=None):
-        start_date, end_date = start_date or self._START_DATE, end_date or datetime.datetime.now().date()
+        start_date, end_date = start_date or self._START_DATE, end_date or dt.datetime.now().date()
 
         # If the last page has a full page of videos, we need to break down the query interval further
         last_page_len = len(list(self._get_entries_for_date(
@@ -959,7 +956,7 @@ class NiconicoLiveIE(InfoExtractor):
             'frontend_id': traverse_obj(embedded_data, ('site', 'frontendId')) or '9',
         })
 
-        hostname = remove_start(urlparse(urlh.url).hostname, 'sp.')
+        hostname = remove_start(urllib.parse.urlparse(urlh.url).hostname, 'sp.')
         latency = try_get(self._configuration_arg('latency'), lambda x: x[0])
         if latency not in self._KNOWN_LATENCY:
             latency = 'high'
