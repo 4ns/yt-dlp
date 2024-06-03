@@ -262,7 +262,7 @@ You can also run `make yt-dlp` instead to compile only the binary without updati
 
 ### Standalone Py2Exe Builds (Windows)
 
-While we provide the option to build with [py2exe](https://www.py2exe.org), it is recommended to build [using PyInstaller](#standalone-pyinstaller-builds) instead since the py2exe builds **cannot contain `pycryptodomex`/`certifi` and need VC++14** on the target computer to run.
+While we provide the option to build with [py2exe](https://www.py2exe.org), it is recommended to build [using PyInstaller](#standalone-pyinstaller-builds) instead since the py2exe builds **cannot contain `pycryptodomex`/`certifi`/`requests` and need VC++14** on the target computer to run.
 
 If you wish to build it anyway, install Python (if it is not already installed) and you can run the following commands:
 
@@ -401,6 +401,9 @@ If you fork the project on GitHub, you can run your fork's [build workflow](.git
     --impersonate CLIENT[:OS]       Client to impersonate for requests. E.g.
                                     chrome, chrome-110, chrome:windows-10. Pass
                                     --impersonate="" to impersonate any client.
+                                    Note that forcing impersonation for all
+                                    requests may have a detrimental impact on
+                                    download speed and stability
     --list-impersonate-targets      List available clients to impersonate.
     -4, --force-ipv4                Make all connections via IPv4
     -6, --force-ipv6                Make all connections via IPv6
